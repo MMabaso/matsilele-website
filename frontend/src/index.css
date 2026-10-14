@@ -1,0 +1,57 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-serif: 'Newsreader', ui-serif, Georgia, serif;
+  --color-ink: #16181d;
+  --color-muted: #5b6270;
+  --color-line: #e7e5e1;
+  --color-paper: #fbfaf7;
+  --color-accent: #0f6b5c;
+  --color-accent-soft: #e3f1ed;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-paper text-ink font-sans antialiased;
+}
+
+a {
+  @apply transition-colors;
+}
+
+/* Digital twin avatar: rotating holographic ring + soft glow */
+@keyframes twin-spin {
+  to { transform: rotate(360deg); }
+}
+.twin-ring { border-radius: 9999px; }
+.twin-ring::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 9999px;
+  background: conic-gradient(from 0deg, #22d3ee, #0f6b5c, #a7f3d0, #6366f1, #22d3ee);
+  animation: twin-spin 6s linear infinite;
+}
+.twin-ring::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 9999px;
+  box-shadow: 0 0 28px 4px rgb(34 211 238 / 0.35);
+}
+@media (prefers-reduced-motion: reduce) {
+  .twin-ring::before { animation: none; }
+}
+
+@keyframes blink {
+  0%, 80%, 100% { opacity: 0.2; }
+  40% { opacity: 1; }
+}
+.typing-dot {
+  animation: blink 1.2s infinite ease-in-out;
+}

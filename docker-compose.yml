@@ -1,0 +1,41 @@
+# Run the production image locally with Postgres:
+#   docker compose up --build        -> http://localhost:8000
+#   docker compose exec web python src/manage.py createsuperuser
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: site
+      POSTGRES_USER: site
+      POSTGRES_PASSWORD: site
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U site -d site"]
+      interval: 5s
+      retries: 10
+
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    env_file:
+      - backend/.env            # OPENAI_API_KEY, email/Pushover settings, ...
+    environment:
+      DJANGO_DEBUG: "False"
+      DJANGO_SECRET_KEY: "local-docker-secret-change-me"
+      DJANGO_ALLOWED_HOSTS: "localhost,127.0.0.1"
+      CSRF_TRUSTED_ORIGINS: "http://localhost:8000"
+      SITE_URL: "http://localhost:8000"
+      SECURE_COOKIES: "False"   # plain http locally; keep True behind HTTPS
+      DATABASE_URL: "postgres://site:site@db:5432/site"
+      SEED_POSTS: "true"
+    volumes:
+      - media:/app/backend/media
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:
+  media:

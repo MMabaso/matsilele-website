@@ -1,0 +1,52 @@
+# ---------------------------------------------------------------- secrets
+# Real keys live only in these files. Commit the .env.example templates instead.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# ---------------------------------------------------------------- Python / Django (backend/)
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+backend/db.sqlite3
+backend/db.sqlite3-journal
+# collectstatic output, uploaded post images, and the RAG index (rebuilt automatically on start)
+backend/staticfiles/
+backend/media/
+backend/chroma/
+
+# ---------------------------------------------------------------- Node / React (frontend/)
+node_modules/
+dist/
+dist-ssr/
+*.local
+*.tsbuildinfo
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ---------------------------------------------------------------- editors / OS
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# ---------------------------------------------------------------- misc
+logs/
+*.log
+*.zip
