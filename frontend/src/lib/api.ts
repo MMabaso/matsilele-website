@@ -50,6 +50,17 @@ export function sessionId(): string {
   }
 }
 
+/** "Clear chat": start a fresh conversation. The old one stays on the server (you still see it in /inbox). */
+export function resetSession(): void {
+  const id = crypto.randomUUID()
+  memorySession = id
+  try {
+    localStorage.setItem('twin-session', id)
+  } catch {
+    /* private mode: the in-memory id is used */
+  }
+}
+
 export const sendChat = (message: string, after: number) =>
   request<ChatState>('/api/chat/', {
     method: 'POST',

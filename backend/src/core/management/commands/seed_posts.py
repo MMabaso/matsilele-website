@@ -11,6 +11,177 @@ TZ = timezone.get_default_timezone()
 
 POSTS = [
     {
+        "title": "Connecting to an LLM with OpenAI or Ollama, Then Chatting: A Step-by-Step Guide",
+        "date": datetime(2026, 10, 15),
+        "tags": "LLMs, OpenAI, Ollama, Python",
+        "excerpt": "One small Python script that talks to either a hosted OpenAI model or a local Ollama model, "
+                   "then grows into a multi-turn chat with memory and streaming.",
+        "body": """If you're starting out with LLMs, the first job is simply getting a model to answer you. The nice
+part: OpenAI's API and Ollama's local server speak the same protocol, so one piece of code works with both. You
+pick hosted (OpenAI) or local (Ollama) by changing two settings.
+
+- **OpenAI**: hosted, strong models, pay per token, needs an API key and an internet connection.
+- **Ollama**: runs open models (Llama, Mistral, Qwen and others) on your own machine. Free and private, but limited
+  by your hardware.
+
+## Step 1: Set up a Python project
+
+```bash
+mkdir llm-chat && cd llm-chat
+python -m venv .venv
+source .venv/bin/activate      # Windows: .venv\\Scripts\\activate
+pip install openai python-dotenv
+```
+
+We use the official `openai` package for both providers.
+
+## Step 2a: Option A, get an OpenAI API key
+
+1. Sign in at platform.openai.com and create an API key.
+2. Add a small amount of credit and set a monthly spending limit.
+3. Create a `.env` file in your project (and add `.env` to `.gitignore`, never commit keys):
+
+```bash
+LLM_BASE_URL=https://api.openai.com/v1
+LLM_API_KEY=sk-...your-key...
+LLM_MODEL=gpt-4o-mini
+```
+
+## Step 2b: Option B, run a model locally with Ollama
+
+1. Install Ollama from ollama.com (macOS, Windows and Linux installers are available).
+2. Download a model and try it in the terminal:
+
+```bash
+ollama pull llama3.2
+ollama run llama3.2 "Say hello in one sentence."
+```
+
+3. Ollama now runs a server on `http://localhost:11434` with an OpenAI-compatible endpoint at `/v1`. Point your
+   `.env` at it. The API key can be any non-empty string, because Ollama doesn't check it:
+
+```bash
+LLM_BASE_URL=http://localhost:11434/v1
+LLM_API_KEY=ollama
+LLM_MODEL=llama3.2
+```
+
+Tip: smaller models (1B to 8B parameters) run fine on a modern laptop. Bigger ones need a good GPU or lots of RAM.
+
+## Step 3: Send your first message
+
+Create `hello.py`:
+
+```python
+import os
+
+from dotenv import load_dotenv
+from openai import OpenAI
+
+load_dotenv()
+
+client = OpenAI(base_url=os.environ["LLM_BASE_URL"], api_key=os.environ["LLM_API_KEY"])
+
+response = client.chat.completions.create(
+    model=os.environ["LLM_MODEL"],
+    messages=[{"role": "user", "content": "Explain RAG in two sentences."}],
+)
+print(response.choices[0].message.content)
+```
+
+Run `python hello.py`. If you see an answer, you're connected. Switching between OpenAI and Ollama is now just a
+matter of editing `.env`, with no code changes.
+
+## Step 4: Add a system prompt
+
+The system message sets the model's role and rules. It's the cheapest way to improve answers.
+
+```python
+messages = [
+    {"role": "system", "content": "You are a friendly tutor. Answer clearly and briefly."},
+    {"role": "user", "content": "What is an embedding?"},
+]
+```
+
+## Step 5: Turn it into a chat with memory
+
+LLM APIs are stateless: the model only knows what you send in each request. To have a conversation, you keep the
+history in a list and send all of it every time. Create `chat.py`:
+
+```python
+import os
+
+from dotenv import load_dotenv
+from openai import OpenAI
+
+load_dotenv()
+client = OpenAI(base_url=os.environ["LLM_BASE_URL"], api_key=os.environ["LLM_API_KEY"])
+model = os.environ["LLM_MODEL"]
+
+messages = [{"role": "system", "content": "You are a helpful assistant. Keep answers short."}]
+
+print("Chat started. Type 'quit' to exit.")
+while True:
+    user_input = input("\\nYou: ").strip()
+    if user_input.lower() in {"quit", "exit"}:
+        break
+    if not user_input:
+        continue
+
+    messages.append({"role": "user", "content": user_input})
+    response = client.chat.completions.create(model=model, messages=messages, temperature=0.7)
+    reply = response.choices[0].message.content
+
+    messages.append({"role": "assistant", "content": reply})
+    print(f"\\nAssistant: {reply}")
+```
+
+Ask "My name is Thabo", then "What's my name?". It remembers, because the earlier turns are in `messages`.
+
+## Step 6: Stream the answer as it's written
+
+Waiting for a full answer feels slow. With `stream=True`, you print each piece as it arrives. Replace the
+request part of the loop with:
+
+```python
+    stream = client.chat.completions.create(model=model, messages=messages, stream=True)
+
+    print("\\nAssistant: ", end="", flush=True)
+    reply = ""
+    for chunk in stream:
+        if not chunk.choices:
+            continue
+        delta = chunk.choices[0].delta.content or ""
+        print(delta, end="", flush=True)
+        reply += delta
+    print()
+
+    messages.append({"role": "assistant", "content": reply})
+```
+
+## Step 7: Handle errors and long conversations
+
+- **Errors**: wrap the request in `try/except` for `openai.APIConnectionError` (Ollama not running, no internet),
+  `openai.AuthenticationError` (wrong key) and `openai.RateLimitError` (too many requests or no credit).
+- **Context limits**: every model has a maximum context window. For long chats, keep the system message and only the
+  last N turns, for example `messages = [messages[0]] + messages[-20:]`.
+- **Cost**: with OpenAI, you pay for the whole history on every turn, so trimming saves money as well.
+
+## Common problems
+
+- `Connection refused` on localhost:11434: start Ollama (open the app, or run `ollama serve`).
+- `model not found` with Ollama: run `ollama pull <model>` first, and check the name with `ollama list`.
+- `401 Unauthorized` with OpenAI: check the key in `.env`, and that `load_dotenv()` runs before you create the client.
+- Very slow local answers: try a smaller model, or close other heavy apps.
+
+## Where to go next
+
+Once you can chat, the next steps are structured JSON output, tool calling, and retrieval over your own documents
+(RAG). The digital twin on this website is built exactly this way: the same chat loop, plus my profile as
+context and a few tools. I cover those topics in
+[ML Engineer → AI Engineer](/posts/from-ml-engineer-to-ai-engineer-a-step-by-step-guide).""",
+    },
+    {
         "title": "From AI Engineer to Forward Deployed Engineer: A Step-by-Step Guide",
         "date": datetime(2026, 10, 14),
         "tags": "Career, Forward Deployed Engineering, AI",

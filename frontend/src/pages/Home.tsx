@@ -8,9 +8,14 @@ export default function Home() {
 
   return (
     <>
-      <section className="mx-auto max-w-5xl px-4 pt-16 pb-12 sm:px-6 sm:pt-24">
-        <div className="flex flex-col-reverse items-start gap-10 md:flex-row md:items-center md:gap-16">
-          <div className="flex-1">
+      <section className="mx-auto max-w-5xl px-4 pt-10 pb-12 sm:px-6 sm:pt-14">
+        <div className="max-w-3xl">
+          <img
+            src={profile.photo}
+            alt={profile.name}
+            className="mb-8 h-32 w-32 rounded-full object-cover shadow-xl ring-4 ring-white sm:h-40 sm:w-40 sm:ring-8"
+          />
+          <div>
             <h1 className="font-serif text-5xl font-semibold tracking-tight sm:text-6xl">Well, hi there.</h1>
             <p className="mt-4 text-sm font-semibold tracking-wider text-accent uppercase">Forward deployed AI engineer</p>
             <div className="mt-6 space-y-5 text-lg leading-relaxed text-ink/85">
@@ -40,11 +45,6 @@ export default function Home() {
               </p>
             </div>
           </div>
-          <img
-            src={profile.photo}
-            alt={profile.name}
-            className="h-48 w-48 shrink-0 rounded-full object-cover shadow-xl ring-8 ring-white sm:h-64 sm:w-64"
-          />
         </div>
       </section>
 

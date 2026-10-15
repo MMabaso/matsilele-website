@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
 import ChatBubble from '../components/ChatBubble'
 import { profile } from '../data/profile'
 import { useInterval } from '../hooks/useInterval'
-import { mergeMessages, pollChat, sendChat } from '../lib/api'
+import { mergeMessages, pollChat, resetSession, sendChat } from '../lib/api'
 import type { ChatMessage, Mode } from '../types'
 
 const suggestions = [
@@ -29,14 +29,28 @@ export default function Avatar() {
   const logRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const lastId = messages.length ? messages[messages.length - 1].id : 0
+  // Bumped by "Clear chat" so replies to the old conversation that are still in flight get ignored.
+  const generation = useRef(0)
 
   // Pick up the conversation where the visitor left off, then keep checking for live replies.
   const poll = useCallback(async () => {
+    const gen = generation.current
     const s = await pollChat(lastId)
+    if (gen !== generation.current) return
     setMessages((m) => mergeMessages(m, s.messages))
     setMode(s.mode)
     setOnline(s.operator_online)
   }, [lastId])
+
+  function clearChat() {
+    generation.current += 1
+    resetSession()
+    setMessages([])
+    setMode('bot')
+    setInput('')
+    setError('')
+    inputRef.current?.focus()
+  }
   useInterval(poll, pending === null ? 3000 : null)
 
   useEffect(() => {
@@ -50,8 +64,10 @@ export default function Avatar() {
     setInput('')
     setError('')
     setPending(message)
+    const gen = generation.current
     try {
       const s = await sendChat(message, lastId)
+      if (gen !== generation.current) return
       setMessages((m) => mergeMessages(m, s.messages))
       setMode(s.mode)
       setOnline(s.operator_online)
@@ -110,10 +126,25 @@ export default function Avatar() {
           ) : (
             <span className="text-muted">Chatting with {profile.shortName}'s digital twin</span>
           )}
-          <span className="flex items-center gap-1.5 text-muted">
-            <span className={`h-2 w-2 rounded-full ${online ? 'bg-emerald-500' : 'bg-slate-300'}`} />
-            {online ? `${profile.shortName} is online` : `${profile.shortName} is away`}
-          </span>
+          <div className="flex flex-wrap items-center justify-end gap-x-4 gap-y-1">
+            <span className="flex items-center gap-1.5 text-muted">
+              <span className={`h-2 w-2 rounded-full ${online ? 'bg-emerald-500' : 'bg-slate-300'}`} />
+              {online ? `${profile.shortName} is online` : `${profile.shortName} is away`}
+            </span>
+            <button
+              type="button"
+              onClick={clearChat}
+              disabled={messages.length === 0 || pending !== null}
+              title="Start a new conversation"
+              className="flex items-center gap-1 rounded-md px-2 py-1 font-medium text-muted hover:bg-paper hover:text-accent disabled:pointer-events-none disabled:opacity-40"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                <path d="M3 12a9 9 0 1 0 3-6.7L3 8" />
+                <path d="M3 3v5h5" />
+              </svg>
+              Clear chat
+            </button>
+          </div>
         </div>
 
         <div ref={logRef} className="h-[28rem] space-y-5 overflow-y-auto p-4 sm:p-6" aria-live="polite">
