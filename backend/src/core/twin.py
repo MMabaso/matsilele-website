@@ -9,12 +9,13 @@ It can also take action through tools:
 
 import json
 import logging
+import re
 from functools import lru_cache
 from pathlib import Path
 
 from django.conf import settings
 
-from .models import ContactRequest, Conversation, UnansweredQuestion
+from .models import ContactRequest, Conversation, FaqEntry, UnansweredQuestion
 from .notify import notify
 
 logger = logging.getLogger(__name__)
@@ -222,13 +223,34 @@ def run_tool(name: str, raw_args: str, session_id: str) -> dict:
         return {"recorded": False, "error": str(exc)}
 
 
+# "Q2", "q 2", "Q2?" -> instant FAQ answer, no LLM call.
+FAQ_SHORTCUT = re.compile(r"^\s*q\s*(\d{1,3})\s*[?.!]?\s*$", re.IGNORECASE)
+
+
+def faq_answer(message: str) -> tuple[int, str] | None:
+    """(n, answer) when the message is a "Qn" shortcut, else None."""
+    match = FAQ_SHORTCUT.match(message)
+    if not match:
+        return None
+    n = int(match.group(1))
+    faqs = FaqEntry.numbered()
+    for number, faq in faqs:
+        if number == n:
+            return n, faq.answer
+    if not faqs:
+        return n, "I don't have any FAQs yet, but ask me anything and I'll do my best to answer."
+    return n, f"I only have Q1–Q{len(faqs)}. Try one of those, or just ask me your question."
+
+
 class TwinUnavailable(Exception):
     pass
 
 
 def ask_twin(message: str, history: list[dict], session_id: str = "anonymous",
-             operator_online: bool = False) -> str:
-    """`history` is a list of {"role": "user"|"assistant", "content": str}, oldest first."""
+             operator_online: bool = False, activity: list | None = None) -> str:
+    """`history` is a list of {"role": "user"|"assistant", "content": str}, oldest first.
+    If `activity` is given, the steps taken (knowledge search, tool calls) are appended to it for the UI."""
+    activity = activity if activity is not None else []
     if not settings.OPENAI_API_KEY:
         raise TwinUnavailable("OPENAI_API_KEY is not set")
 
@@ -240,6 +262,7 @@ def ask_twin(message: str, history: list[dict], session_id: str = "anonymous",
     # like "tell me more about that").
     prev_user = next((m["content"] for m in reversed(history) if m["role"] == "user"), "")
     passages = retrieve(f"{message}\n{prev_user}".strip())
+    activity.append({"type": "search", "count": len(passages or [])})
 
     client = OpenAI(api_key=settings.OPENAI_API_KEY, base_url=settings.OPENAI_BASE_URL)
     tools = TOOLS + ([LIVE_CHAT_TOOL] if operator_online else [])
@@ -258,6 +281,7 @@ def ask_twin(message: str, history: list[dict], session_id: str = "anonymous",
         messages.append(choice)
         for call in choice.tool_calls:
             result = run_tool(call.function.name, call.function.arguments, session_id)
+            activity.append({"type": "tool", "name": call.function.name})
             messages.append({"role": "tool", "tool_call_id": call.id, "content": json.dumps(result)})
 
     return "Thanks! I've passed that on to Matsilele."

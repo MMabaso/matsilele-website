@@ -67,6 +67,28 @@ class UnansweredQuestion(models.Model):
         return self.question[:80]
 
 
+class FaqEntry(models.Model):
+    """FAQ shown on the avatar page. Visitors type "Q2" to get the 2nd published answer instantly."""
+
+    question = models.CharField(max_length=300)
+    answer = models.TextField(help_text="Markdown supported.")
+    order = models.PositiveIntegerField(default=0, help_text="Lower comes first; sets the Q-number.")
+    published = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ["order", "id"]
+        verbose_name = "FAQ entry"
+        verbose_name_plural = "FAQ entries"
+
+    def __str__(self) -> str:
+        return self.question[:80]
+
+    @classmethod
+    def numbered(cls) -> list[tuple[int, "FaqEntry"]]:
+        """Published entries, numbered from 1 in display order."""
+        return list(enumerate(cls.objects.filter(published=True), 1))
+
+
 class Conversation(models.Model):
     """One visitor's chat. In BOT mode the twin answers; in HUMAN mode you answer from /inbox."""
 

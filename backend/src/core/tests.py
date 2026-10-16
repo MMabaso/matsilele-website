@@ -13,7 +13,7 @@ from django.core import mail
 from django.test import Client, TestCase, override_settings
 from django.utils import timezone
 
-from .models import ContactRequest, Conversation, Message, OperatorPresence, Post, UnansweredQuestion
+from .models import ContactRequest, Conversation, FaqEntry, Message, OperatorPresence, Post, UnansweredQuestion
 
 SESSION = "session-0001"
 
@@ -202,6 +202,61 @@ class LiveInboxTests(ChatTestCase):
             self.chat("When were you free again?")
         sent = client.chat.completions.create.call_args.kwargs["messages"]
         self.assertTrue(any("[Matsilele, live] I'm free on Friday" in m["content"] for m in sent))
+
+
+@override_settings(**NOTIFY_SETTINGS)
+class FaqTests(ChatTestCase):
+    def setUp(self):
+        FaqEntry.objects.all().delete()  # ignore the seeded starters
+        FaqEntry.objects.create(question="First?", answer="Answer one", order=1)
+        FaqEntry.objects.create(question="Hidden?", answer="Nope", order=2, published=False)
+        FaqEntry.objects.create(question="Second?", answer="Answer two", order=3)
+
+    def test_faq_list_is_numbered_and_skips_unpublished(self):
+        self.assertEqual(self.client.get("/api/faq/").json(),
+                         [{"number": 1, "question": "First?"}, {"number": 2, "question": "Second?"}])
+
+    def test_q_shortcut_answers_instantly_without_llm(self):
+        client = fake_client()
+        with patch("openai.OpenAI", return_value=client):
+            res = self.chat("Q2")
+        client.chat.completions.create.assert_not_called()
+        body = res.json()
+        self.assertEqual(body["messages"][-1]["content"], "Answer two")
+        self.assertEqual(body["activity"], {"message_id": body["messages"][-1]["id"],
+                                            "steps": [{"type": "instant", "faq": 2}]})
+
+    def test_q_shortcut_is_forgiving(self):
+        with patch("openai.OpenAI", return_value=fake_client()):
+            res = self.chat(" q 1? ")
+        self.assertEqual(res.json()["messages"][-1]["content"], "Answer one")
+
+    def test_unknown_q_number(self):
+        with patch("openai.OpenAI", return_value=fake_client()):
+            res = self.chat("Q99")
+        self.assertIn("Q1–Q2", res.json()["messages"][-1]["content"])
+
+    def test_q_text_in_a_sentence_goes_to_llm(self):
+        with patch("openai.OpenAI", return_value=fake_client(text_response("Sure"))):
+            res = self.chat("What is Q2 about?")
+        self.assertEqual(res.json()["messages"][-1]["content"], "Sure")
+
+    def test_q_shortcut_reaches_matsilele_when_live(self):
+        OperatorPresence.touch()
+        Conversation.objects.create(session_id=SESSION, mode=Conversation.HUMAN)
+        res = self.chat("Q1")
+        self.assertEqual(res.json()["messages"][-1]["role"], "user")
+        self.assertNotIn("activity", res.json())
+
+    def test_activity_lists_search_and_tools(self):
+        client = fake_client(
+            tool_call_response("record_unanswered_question", {"question": "Salary?"}),
+            text_response("Not sure, sorry."),
+        )
+        with patch("openai.OpenAI", return_value=client):
+            res = self.chat("Salary?")
+        self.assertEqual(res.json()["activity"]["steps"],
+                         [{"type": "search", "count": 0}, {"type": "tool", "name": "record_unanswered_question"}])
 
 
 def fake_embed(texts):

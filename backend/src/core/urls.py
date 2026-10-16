@@ -8,6 +8,7 @@ urlpatterns = [
     # visitor
     path("chat/", views.ChatView.as_view(), name="chat"),
     path("chat/<str:session_id>/", views.ChatPollView.as_view(), name="chat-poll"),
+    path("faq/", views.FaqListView.as_view(), name="faq"),
     # inbox (staff only)
     path("inbox/me/", views.InboxMeView.as_view(), name="inbox-me"),
     path("inbox/conversations/", views.InboxListView.as_view(), name="inbox-list"),

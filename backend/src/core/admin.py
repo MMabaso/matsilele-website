@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import ContactRequest, Conversation, Message, Post, UnansweredQuestion
+from .models import ContactRequest, Conversation, FaqEntry, Message, Post, UnansweredQuestion
 
 
 @admin.register(Post)
@@ -24,6 +24,13 @@ class ContactRequestAdmin(admin.ModelAdmin):
 class UnansweredQuestionAdmin(admin.ModelAdmin):
     list_display = ("created_at", "question")
     search_fields = ("question",)
+
+
+@admin.register(FaqEntry)
+class FaqEntryAdmin(admin.ModelAdmin):
+    list_display = ("question", "order", "published")
+    list_editable = ("order", "published")
+    search_fields = ("question", "answer")
 
 
 class MessageInline(admin.TabularInline):

@@ -1,4 +1,4 @@
-import type { ChatState, InboxConversation, InboxThread, Mode, Post, PostSummary } from '../types'
+import type { ChatState, FaqItem, InboxConversation, InboxThread, Mode, Post, PostSummary } from '../types'
 
 // Empty in dev (Vite proxy); set VITE_API_URL=https://api.yourdomain.com in production if hosted separately.
 export const API = import.meta.env.VITE_API_URL ?? ''
@@ -68,6 +68,8 @@ export const sendChat = (message: string, after: number) =>
   })
 
 export const pollChat = (after: number) => request<ChatState>(`/api/chat/${sessionId()}/?after=${after}`)
+
+export const fetchFaq = () => request<FaqItem[]>('/api/faq/')
 
 // ---------------------------------------------------------------- inbox (staff)
 export const inboxMe = () => request<{ username: string }>('/api/inbox/me/')

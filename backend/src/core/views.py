@@ -9,7 +9,7 @@ from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Conversation, Message, OperatorPresence, Post
+from .models import Conversation, FaqEntry, Message, OperatorPresence, Post
 from .serializers import (
     ChatRequestSerializer,
     MessageSerializer,
@@ -17,7 +17,7 @@ from .serializers import (
     PostDetailSerializer,
     PostListSerializer,
 )
-from .twin import TwinUnavailable, ask_twin
+from .twin import TwinUnavailable, ask_twin, faq_answer
 
 logger = logging.getLogger(__name__)
 
@@ -107,9 +107,30 @@ class ChatView(APIView):
                 return Response(state(conv, after))  # Matsilele will reply from /inbox
             set_mode(conv, Conversation.BOT)
 
+        activity: list[dict] = []
+        http_status = status.HTTP_200_OK
+        instant = faq_answer(text)
+        if instant:
+            number, reply = instant
+            activity.append({"type": "instant", "faq": number})
+        else:
+            reply, http_status = self.twin_reply(conv, user_msg, text, activity)
+
+        conv.refresh_from_db(fields=["mode"])
+        bot_msg = None
+        if conv.mode == Conversation.BOT:  # Matsilele may have joined while the twin was thinking
+            bot_msg = conv.messages.create(role=Message.ASSISTANT, content=reply)
+        body = state(conv, after)
+        if bot_msg:
+            body["activity"] = {"message_id": bot_msg.id, "steps": activity}
+        return Response(body, status=http_status)
+
+    @staticmethod
+    def twin_reply(conv: Conversation, user_msg: Message, text: str, activity: list) -> tuple[str, int]:
         online = OperatorPresence.is_online()
         try:
-            reply = ask_twin(text, llm_history(conv, user_msg.id), session_id=session_id, operator_online=online)
+            reply = ask_twin(text, llm_history(conv, user_msg.id), session_id=conv.session_id,
+                             operator_online=online, activity=activity)
             http_status = status.HTTP_200_OK
         except TwinUnavailable:
             reply = ("My digital twin isn't switched on yet (no LLM API key configured). "
@@ -120,11 +141,16 @@ class ChatView(APIView):
             reply = ("Sorry, I'm having trouble thinking right now. Please try again shortly, "
                      "or email me at matsilele.aubrey@gmail.com.")
             http_status = status.HTTP_503_SERVICE_UNAVAILABLE
+        return reply, http_status
 
-        conv.refresh_from_db(fields=["mode"])
-        if conv.mode == Conversation.BOT:  # Matsilele may have joined while the twin was thinking
-            conv.messages.create(role=Message.ASSISTANT, content=reply)
-        return Response(state(conv, after), status=http_status)
+
+class FaqListView(APIView):
+    """Numbered FAQ for the avatar page: typing "Qn" in the chat returns answer n instantly."""
+
+    throttle_scope = "poll"
+
+    def get(self, request):
+        return Response([{"number": n, "question": f.question} for n, f in FaqEntry.numbered()])
 
 
 class ChatPollView(APIView):

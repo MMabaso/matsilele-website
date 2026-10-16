@@ -16,7 +16,7 @@ export default function Home() {
             className="mb-8 h-32 w-32 rounded-full object-cover shadow-xl ring-4 ring-white sm:h-40 sm:w-40 sm:ring-8"
           />
           <div>
-            <h1 className="font-serif text-5xl font-semibold tracking-tight sm:text-6xl">Well, hi there.</h1>
+            <h1 className="font-serif text-5xl font-semibold tracking-tight sm:text-4xl">Hello, I’m Matsilele.</h1>
             <p className="mt-4 text-sm font-semibold tracking-wider text-accent uppercase">Forward deployed AI engineer</p>
             <div className="mt-6 space-y-5 text-lg leading-relaxed text-ink/85">
               <p>

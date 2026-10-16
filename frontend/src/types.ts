@@ -22,10 +22,22 @@ export interface ChatMessage {
   created_at: string
 }
 
+/** What the twin did to produce a reply, shown as small status lines above it. */
+export type ActivityStep =
+  | { type: 'search'; count: number }
+  | { type: 'tool'; name: string }
+  | { type: 'instant'; faq: number }
+
 export interface ChatState {
   messages: ChatMessage[]
   mode: Mode
   operator_online: boolean
+  activity?: { message_id: number; steps: ActivityStep[] } // only on POST /api/chat/ when the twin replied
+}
+
+export interface FaqItem {
+  number: number
+  question: string
 }
 
 export interface InboxConversation {
