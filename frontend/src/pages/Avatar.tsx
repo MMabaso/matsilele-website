@@ -7,7 +7,7 @@ import { mergeMessages, pollChat, resetSession, sendChat } from '../lib/api'
 import type { ActivityStep, ChatMessage, Mode } from '../types'
 
 const suggestions = [
-  'What do you work on at Hulamin?',
+  'What do you work on?',
   'How do you deploy ML models to production?',
   "I'd like to talk to you about a role",
 ]

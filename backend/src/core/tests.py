@@ -154,6 +154,15 @@ class LiveInboxTests(ChatTestCase):
         c.force_login(visitor)
         self.assertEqual(c.get("/api/inbox/conversations/").status_code, 403)
 
+    def test_inbox_lists_newest_activity_first(self):
+        with patch("openai.OpenAI", return_value=fake_client(text_response("a"), text_response("b"))):
+            self.chat("I'm new here", session="session-0002")
+            self.chat("Me too", session="session-0003")
+        ids = [c["id"] for c in self.staff.get("/api/inbox/conversations/").json()]
+        newest = Conversation.objects.get(session_id="session-0003").id
+        self.assertEqual(ids[0], newest)
+        self.assertEqual(ids[-1], self.conv.id)
+
     def test_opening_inbox_makes_operator_online(self):
         self.assertFalse(self.client.get(f"/api/chat/{SESSION}/").json()["operator_online"])
         listing = self.staff.get("/api/inbox/conversations/").json()

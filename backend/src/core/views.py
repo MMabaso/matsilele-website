@@ -188,7 +188,9 @@ class InboxListView(StaffView):
                                                   messages__id__gt=F("operator_read_up_to"))),
                 total=Count("messages"),
             )
-            .filter(total__gt=0)[:50]
+            .filter(total__gt=0)
+            # Explicit: Meta.ordering is ignored once the query is grouped by the counts above
+            .order_by("-last_activity", "-id")[:50]
         )
         out = []
         for c in convs:

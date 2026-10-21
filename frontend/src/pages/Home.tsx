@@ -17,7 +17,7 @@ export default function Home() {
           />
           <div>
             <h1 className="font-serif text-5xl font-semibold tracking-tight sm:text-4xl">Hello, I’m Matsilele.</h1>
-            <p className="mt-4 text-sm font-semibold tracking-wider text-accent uppercase">Forward deployed AI engineer</p>
+            <p className="mt-4 text-sm font-semibold tracking-wider text-accent uppercase">Data Scientist | AI Engineer</p>
             <div className="mt-6 space-y-5 text-lg leading-relaxed text-ink/85">
               <p>
                 I'm {profile.shortName}. I work where the problem is: alongside the engineers, operators and business

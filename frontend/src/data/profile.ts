@@ -3,7 +3,7 @@
 export const profile = {
   name: 'Matsilele Mabaso',
   shortName: 'Matsilele',
-  title: 'Data Scientist · Forward Deployed AI Engineer',
+  title: 'Data Scientist | AI Engineer',
   location: 'Pretoria, South Africa',
   email: 'matsilele.aubrey@gmail.com',
   photo: '/matsilele.jpg',
