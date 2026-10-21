@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000" font-family="Inter, 'Segoe UI', Arial, sans-serif">
+<rect width="1600" height="1000" fill="#f3f1ec"/>
+<clipPath id="frame"><rect x="48" y="48" width="1504" height="904" rx="24"/></clipPath>
+<g clip-path="url(#frame)"><rect x="48" y="48" width="1504" height="904" fill="#ffffff"/>
+<rect x="48" y="48" width="400" height="904" fill="#f7f6f2"/></g>
+<rect x="48" y="48" width="1504" height="904" rx="24" fill="none" stroke="#e7e5e1" stroke-width="2"/>
+<line x1="448" y1="48" x2="448" y2="952" stroke="#e7e5e1" stroke-width="2"/>
+<rect x="84" y="88" width="48" height="48" rx="12" fill="#0f6b5c"/>
+<path d="M96,104 h24 a4,4 0 0 1 4,4 v12 a4,4 0 0 1 -4,4 h-14 l-8,6 v-6 h-2 a4,4 0 0 1 -4,-4 v-12 a4,4 0 0 1 4,-4 z" fill="#ffffff"/>
+<text x="148" y="112" font-size="24" fill="#16181d" font-weight="700" text-anchor="start">Knowledge</text>
+<text x="148" y="138" font-size="24" fill="#16181d" font-weight="700" text-anchor="start">Assistant</text>
+<text x="84" y="206" font-size="15" fill="#5b6270" font-weight="700" text-anchor="start">SEARCHES ACROSS</text>
+<rect x="84" y="232" width="328" height="50" rx="12" fill="#ffffff" stroke="#e7e5e1" stroke-width="2"/>
+<path d="M102,242 h16 l8,8 v22 h-24 z" fill="#e3f1ed" stroke="#0f6b5c" stroke-width="2" stroke-linejoin="round"/>
+<line x1="107" y1="256" x2="121" y2="256" stroke="#0f6b5c" stroke-width="2"/>
+<line x1="107" y1="261" x2="121" y2="261" stroke="#0f6b5c" stroke-width="2"/>
+<line x1="107" y1="266" x2="121" y2="266" stroke="#0f6b5c" stroke-width="2"/>
+<text x="142" y="264" font-size="18" fill="#16181d" font-weight="500" text-anchor="start">Engineering manuals</text>
+<rect x="84" y="296" width="328" height="50" rx="12" fill="#ffffff" stroke="#e7e5e1" stroke-width="2"/>
+<path d="M102,306 h16 l8,8 v22 h-24 z" fill="#e3f1ed" stroke="#0f6b5c" stroke-width="2" stroke-linejoin="round"/>
+<line x1="107" y1="320" x2="121" y2="320" stroke="#0f6b5c" stroke-width="2"/>
+<line x1="107" y1="325" x2="121" y2="325" stroke="#0f6b5c" stroke-width="2"/>
+<line x1="107" y1="330" x2="121" y2="330" stroke="#0f6b5c" stroke-width="2"/>
+<text x="142" y="328" font-size="18" fill="#16181d" font-weight="500" text-anchor="start">Standard operating procedures</text>
+<rect x="84" y="360" width="328" height="50" rx="12" fill="#ffffff" stroke="#e7e5e1" stroke-width="2"/>
+<path d="M102,370 h16 l8,8 v22 h-24 z" fill="#e3f1ed" stroke="#0f6b5c" stroke-width="2" stroke-linejoin="round"/>
+<line x1="107" y1="384" x2="121" y2="384" stroke="#0f6b5c" stroke-width="2"/>
+<line x1="107" y1="389" x2="121" y2="389" stroke="#0f6b5c" stroke-width="2"/>
+<line x1="107" y1="394" x2="121" y2="394" stroke="#0f6b5c" stroke-width="2"/>
+<text x="142" y="392" font-size="18" fill="#16181d" font-weight="500" text-anchor="start">Technical reports</text>
+<rect x="84" y="424" width="328" height="50" rx="12" fill="#ffffff" stroke="#e7e5e1" stroke-width="2"/>
+<path d="M102,434 h16 l8,8 v22 h-24 z" fill="#e3f1ed" stroke="#0f6b5c" stroke-width="2" stroke-linejoin="round"/>
+<line x1="107" y1="448" x2="121" y2="448" stroke="#0f6b5c" stroke-width="2"/>
+<line x1="107" y1="453" x2="121" y2="453" stroke="#0f6b5c" stroke-width="2"/>
+<line x1="107" y1="458" x2="121" y2="458" stroke="#0f6b5c" stroke-width="2"/>
+<text x="142" y="456" font-size="18" fill="#16181d" font-weight="500" text-anchor="start">Safety documents</text>
+<text x="84" y="522" font-size="15" fill="#5b6270" font-weight="700" text-anchor="start">RECENT QUESTIONS</text>
+<text x="84" y="562" font-size="18" fill="#5b6270" font-weight="400" text-anchor="start">Cold mill roll change checks</text>
+<text x="84" y="606" font-size="18" fill="#5b6270" font-weight="400" text-anchor="start">Coolant concentration limits</text>
+<text x="84" y="650" font-size="18" fill="#5b6270" font-weight="400" text-anchor="start">Furnace start-up sequence</text>
+<rect x="84" y="852" width="328" height="64" rx="14" fill="#e3f1ed"/>
+<rect x="104" y="874" width="16" height="14" rx="3" fill="#0f6b5c"/><path d="M107,874 v-5 a5,5 0 0 1 10,0 v5" fill="none" stroke="#0f6b5c" stroke-width="3"/>
+<text x="134" y="880" font-size="17" fill="#0f6b5c" font-weight="700" text-anchor="start">Private LLM</text>
+<text x="134" y="902" font-size="16" fill="#0f6b5c" font-weight="400" text-anchor="start">Documents stay in-house</text>
+<text x="496" y="112" font-size="22" fill="#5b6270" font-weight="400" text-anchor="start">Ask anything about our plants, procedures and equipment</text>
+<line x1="448" y1="148" x2="1552" y2="148" stroke="#e7e5e1" stroke-width="2"/>
+<rect x="820" y="180" width="684" height="92" rx="20" fill="#0f6b5c"/>
+<text x="848" y="218" font-size="21" fill="#ffffff" font-weight="500" text-anchor="start">What checks are needed before restarting the</text>
+<text x="848" y="250" font-size="21" fill="#ffffff" font-weight="500" text-anchor="start">cold mill after a work roll change?</text>
+<circle cx="518" cy="328" r="22" fill="#e3f1ed"/>
+<path d="M508,320 h20 a3,3 0 0 1 3,3 v10 a3,3 0 0 1 -3,3 h-11 l-6,5 v-5 h-3 a3,3 0 0 1 -3,-3 v-10 a3,3 0 0 1 3,-3 z" fill="#0f6b5c"/>
+<rect x="556" y="300" width="900" height="380" rx="20" fill="#f7f6f2" stroke="#e7e5e1" stroke-width="2"/>
+<text x="588" y="344" font-size="21" fill="#16181d" font-weight="600" text-anchor="start">Before restarting after a work roll change:</text>
+<text x="588" y="398" font-size="20" fill="#0f6b5c" font-weight="700" text-anchor="start">1.</text>
+<text x="620" y="398" font-size="20" fill="#16181d" font-weight="400" text-anchor="start">Confirm the lock-out is released by the authorised person.</text>
+<rect x="1398" y="380" width="26" height="24" rx="6" fill="#e3f1ed"/>
+<text x="1411" y="398" font-size="15" fill="#0f6b5c" font-weight="700" text-anchor="middle">1</text>
+<text x="588" y="450" font-size="20" fill="#0f6b5c" font-weight="700" text-anchor="start">2.</text>
+<text x="620" y="450" font-size="20" fill="#16181d" font-weight="400" text-anchor="start">Check roll gap and alignment against the set-up sheet.</text>
+<rect x="1398" y="432" width="26" height="24" rx="6" fill="#e3f1ed"/>
+<text x="1411" y="450" font-size="15" fill="#0f6b5c" font-weight="700" text-anchor="middle">1</text>
+<text x="588" y="502" font-size="20" fill="#0f6b5c" font-weight="700" text-anchor="start">3.</text>
+<text x="620" y="502" font-size="20" fill="#16181d" font-weight="400" text-anchor="start">Run at threading speed and verify coolant flow on both sides.</text>
+<rect x="1398" y="484" width="26" height="24" rx="6" fill="#e3f1ed"/>
+<text x="1411" y="502" font-size="15" fill="#0f6b5c" font-weight="700" text-anchor="middle">2</text>
+<text x="588" y="554" font-size="20" fill="#0f6b5c" font-weight="700" text-anchor="start">4.</text>
+<text x="620" y="554" font-size="20" fill="#16181d" font-weight="400" text-anchor="start">Inspect the first coil for surface marks before full speed.</text>
+<rect x="1398" y="536" width="26" height="24" rx="6" fill="#e3f1ed"/>
+<text x="1411" y="554" font-size="15" fill="#0f6b5c" font-weight="700" text-anchor="middle">2</text>
+<text x="588" y="606" font-size="20" fill="#0f6b5c" font-weight="700" text-anchor="start">5.</text>
+<text x="620" y="606" font-size="20" fill="#16181d" font-weight="400" text-anchor="start">Record the change and roll numbers in the shift log.</text>
+<rect x="1398" y="588" width="26" height="24" rx="6" fill="#e3f1ed"/>
+<text x="1411" y="606" font-size="15" fill="#0f6b5c" font-weight="700" text-anchor="middle">3</text>
+<text x="588" y="656" font-size="17" fill="#5b6270" font-weight="400" text-anchor="start">Answers are grounded in your documents, with sources below.</text>
+<text x="556" y="726" font-size="15" fill="#5b6270" font-weight="700" text-anchor="start">SOURCES</text>
+<rect x="556" y="744" width="288" height="56" rx="12" fill="#ffffff" stroke="#e7e5e1" stroke-width="2"/>
+<rect x="570" y="762" width="26" height="24" rx="6" fill="#e3f1ed"/>
+<text x="583" y="780" font-size="15" fill="#0f6b5c" font-weight="700" text-anchor="middle">1</text>
+<path d="M608,757 h16 l8,8 v22 h-24 z" fill="#e3f1ed" stroke="#0f6b5c" stroke-width="2" stroke-linejoin="round"/>
+<line x1="613" y1="771" x2="627" y2="771" stroke="#0f6b5c" stroke-width="2"/>
+<line x1="613" y1="776" x2="627" y2="776" stroke="#0f6b5c" stroke-width="2"/>
+<line x1="613" y1="781" x2="627" y2="781" stroke="#0f6b5c" stroke-width="2"/>
+<text x="644" y="779" font-size="16" fill="#16181d" font-weight="500" text-anchor="start">Roll change SOP</text>
+<rect x="860" y="744" width="288" height="56" rx="12" fill="#ffffff" stroke="#e7e5e1" stroke-width="2"/>
+<rect x="874" y="762" width="26" height="24" rx="6" fill="#e3f1ed"/>
+<text x="887" y="780" font-size="15" fill="#0f6b5c" font-weight="700" text-anchor="middle">2</text>
+<path d="M912,757 h16 l8,8 v22 h-24 z" fill="#e3f1ed" stroke="#0f6b5c" stroke-width="2" stroke-linejoin="round"/>
+<line x1="917" y1="771" x2="931" y2="771" stroke="#0f6b5c" stroke-width="2"/>
+<line x1="917" y1="776" x2="931" y2="776" stroke="#0f6b5c" stroke-width="2"/>
+<line x1="917" y1="781" x2="931" y2="781" stroke="#0f6b5c" stroke-width="2"/>
+<text x="948" y="779" font-size="16" fill="#16181d" font-weight="500" text-anchor="start">Mill engineering manual</text>
+<rect x="1164" y="744" width="288" height="56" rx="12" fill="#ffffff" stroke="#e7e5e1" stroke-width="2"/>
+<rect x="1178" y="762" width="26" height="24" rx="6" fill="#e3f1ed"/>
+<text x="1191" y="780" font-size="15" fill="#0f6b5c" font-weight="700" text-anchor="middle">3</text>
+<path d="M1216,757 h16 l8,8 v22 h-24 z" fill="#e3f1ed" stroke="#0f6b5c" stroke-width="2" stroke-linejoin="round"/>
+<line x1="1221" y1="771" x2="1235" y2="771" stroke="#0f6b5c" stroke-width="2"/>
+<line x1="1221" y1="776" x2="1235" y2="776" stroke="#0f6b5c" stroke-width="2"/>
+<line x1="1221" y1="781" x2="1235" y2="781" stroke="#0f6b5c" stroke-width="2"/>
+<text x="1252" y="779" font-size="16" fill="#16181d" font-weight="500" text-anchor="start">Shift log template</text>
+<rect x="496" y="852" width="1008" height="64" rx="32" fill="#ffffff" stroke="#e7e5e1" stroke-width="2"/>
+<text x="528" y="891" font-size="19" fill="#5b6270" font-weight="400" text-anchor="start">Ask about procedures, equipment or reports…</text>
+<circle cx="1472" cy="884" r="22" fill="#0f6b5c"/>
+<path d="M1462,884 h20 m-8,-8 l8,8 l-8,8" stroke="#ffffff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

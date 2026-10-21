@@ -1,5 +1,11 @@
 // Edit this file to update the About page and site-wide details.
 
+// Set showPosts to true to bring the blog back into the nav, footer, home page and project links.
+// Post pages stay reachable by direct link either way, so the digital twin's links to posts keep working.
+export const site = {
+  showPosts: false,
+}
+
 export const profile = {
   name: 'Matsilele Mabaso',
   shortName: 'Matsilele',
@@ -55,6 +61,11 @@ export const education = [
   { year: '2010', degree: 'Honours in Mathematical Statistics (Cum Laude)', school: 'University of Limpopo' },
   { year: '2007 – 2009', degree: 'BSc Mathematics & Statistics (Cum Laude)', school: 'University of Limpopo' },
   { year: '2022', degree: 'Data Engineering', school: 'Explore Data Science Academy' },
+]
+
+// Leave `year` out while a certification is in progress; it shows an "In progress" badge instead.
+export const certifications: { name: string; issuer?: string; year?: string }[] = [
+  { name: 'Lean Six Sigma Green Belt' },
 ]
 
 export const skills = [

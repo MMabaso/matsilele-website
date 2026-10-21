@@ -5,7 +5,9 @@ import Avatar from './pages/Avatar'
 import Home from './pages/Home'
 import Inbox from './pages/Inbox'
 import PostDetail from './pages/PostDetail'
+import ProjectDetail from './pages/ProjectDetail'
 import Posts from './pages/Posts'
+import Projects from './pages/Projects'
 
 function NotFound() {
   return (
@@ -24,6 +26,8 @@ export default function App() {
           <Route index element={<Home />} />
           <Route path="avatar" element={<Avatar />} />
           <Route path="about" element={<About />} />
+          <Route path="projects" element={<Projects />} />
+          <Route path="projects/:slug" element={<ProjectDetail />} />
           <Route path="posts" element={<Posts />} />
           <Route path="posts/:slug" element={<PostDetail />} />
           <Route path="inbox" element={<Inbox />} />

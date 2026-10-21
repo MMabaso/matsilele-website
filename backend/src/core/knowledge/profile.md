@@ -37,6 +37,10 @@ reliable, reproducible and scalable ML systems that turn models into operational
 - 2010 — Honours in Mathematical Statistics, University of Limpopo, Cum Laude
 - 2007–2009 — BSc Mathematics & Statistics, University of Limpopo, Cum Laude
 
+## Certifications
+- Lean Six Sigma Green Belt — currently in progress (not yet completed). Matsilele is working towards it; do not
+  say Matsilele is certified yet.
+
 ## Experience
 ### Senior Data Scientist — Hulamin, Pietermaritzburg (Nov 2024 – present)
 - Designs, builds and deploys production-grade ML applications across the manufacturing environment, from
@@ -73,11 +77,33 @@ reliable, reproducible and scalable ML systems that turn models into operational
 ## Selected projects
 1. GenAI chatbot with RAG (Hulamin): private LLM + retrieval over engineering manuals, SOPs and reports using
    FAISS/ChromaDB; reduced support requests by 40%.
+   Also called the Hulamin Knowledge Base Assistant: it answers questions related to Hulamin from the company's
+   own documents and shows the sources behind each answer. Project page on this website: /projects/hulamin-knowledge-base-assistant.
 2. Product quality prediction (Hulamin): regression model linking process parameters to product quality.
 3. Time-series forecasting API (Sasol): Django + React.js, ARIMA + ML models; reduced inventory variance by 18%.
 4. Predictive dialling algorithm (Consumer Profile Bureau): reduced contact-centre idle time by 25%.
 5. Production ML deployment platform (Hulamin): Django/DRF + React/TypeScript, Docker, GitHub Actions, ACR → AKS,
    model artifacts in Azure Blob Storage.
+6. Argus commodity price forecasting (Sasol): time-series forecasting of raw material commodity prices using Argus price
+   data. Matsilele created the Django backend and forecasting API and integrated it into an existing React
+   frontend. Project page on this website: /projects/argus-commodity-price-forecasting.
+7. Automated Pinhole Detection & Quality Decision Support System (Hulamin): computer vision system that detects
+   and counts pinholes in illuminated aluminium foil samples using a Basler industrial camera and fluorescent
+   lighting. Matsilele developed and deployed it: OpenCV image-processing algorithms automate pinhole identification
+   and counting (no more manual operator counting); a Streamlit app displays inspection results and recommends a
+   predefined quality disposition (release to customer, refer to a product specialist for further assessment, or
+   reject); containerised with Docker and deployed for operational use in the quality inspection process.
+   Technologies: Python, OpenCV, Basler industrial camera, Streamlit, Docker, computer vision. Outcome: improved
+   inspection efficiency and decision consistency, and contributed to a reduction in customer complaints about
+   foil quality defects. Project page on this website: /projects/pinhole-detection.
+8. Manufacturing Recovery & Loss Management Dashboard (Hulamin): full-stack dashboard that Matsilele designed,
+   developed and deployed with Python, Django REST Framework and React. Interactive analytics monitor
+   manufacturing losses, recovery performance and loss categories. Corrective-action tracking workflows link
+   identified losses to responsible teams, action owners and target completion dates, and automated overdue-action
+   reminders notify teams when actions pass their deadlines, improving accountability and follow-up. Integrated
+   with the Hulamin Knowledge Base Assistant, connecting manufacturing reporting workflows with the company's
+   AI-powered knowledge assistance. Containerised with Docker and deployed in Hulamin's in-house environment.
+   Technologies: Python, Django REST Framework, React, Docker, AI integration, workflow automation. Project page on this website: /projects/recovery-loss-management-dashboard.
 
 ## Awards
 - 2019 Invited Speaker, International Conference on Soft Computing and Machine Learning, Wuhan, China

@@ -1,11 +1,22 @@
 import { Link } from 'react-router-dom'
 import PostGrid from '../components/PostGrid'
-import { profile } from '../data/profile'
+import { profile, site } from '../data/profile'
 import { usePosts } from '../hooks/usePosts'
 
-export default function Home() {
+function LatestPosts() {
   const { posts, error } = usePosts(4)
+  return (
+    <section className="mx-auto max-w-5xl px-4 sm:px-6">
+      <div className="mb-8 flex items-baseline justify-between border-t border-line pt-10">
+        <h2 className="font-serif text-3xl font-semibold">Latest posts</h2>
+        <Link to="/posts" className="text-sm font-medium text-accent hover:underline">All posts →</Link>
+      </div>
+      <PostGrid posts={posts} error={error} />
+    </section>
+  )
+}
 
+export default function Home() {
   return (
     <>
       <section className="mx-auto max-w-5xl px-4 pt-10 pb-12 sm:px-6 sm:pt-14">
@@ -48,13 +59,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-5xl px-4 sm:px-6">
-        <div className="mb-8 flex items-baseline justify-between border-t border-line pt-10">
-          <h2 className="font-serif text-3xl font-semibold">Latest posts</h2>
-          <Link to="/posts" className="text-sm font-medium text-accent hover:underline">All posts →</Link>
-        </div>
-        <PostGrid posts={posts} error={error} />
-      </section>
+      {site.showPosts && <LatestPosts />}
     </>
   )
 }

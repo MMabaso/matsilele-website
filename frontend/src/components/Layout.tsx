@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
-import { profile } from '../data/profile'
+import { profile, site } from '../data/profile'
 
 const nav = [
   { to: '/avatar', label: 'Avatar' },
   { to: '/about', label: 'About' },
+  { to: '/projects', label: 'Selected projects' },
   { to: '/posts', label: 'Posts' },
-]
+].filter((n) => site.showPosts || n.to !== '/posts')
 
 function Header() {
   const [open, setOpen] = useState(false)

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { awards, education, experience, profile, skills } from '../data/profile'
+import { awards, certifications, education, experience, profile, skills } from '../data/profile'
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -85,6 +85,24 @@ export default function About() {
               <div>
                 <p className="font-semibold">{e.degree}</p>
                 <p className="text-muted">{e.school}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </Section>
+
+      <Section title="Certifications">
+        <ul className="space-y-5">
+          {certifications.map((c) => (
+            <li key={c.name} className="grid gap-1 sm:grid-cols-[8rem_1fr] sm:gap-6">
+              <span className="text-sm font-medium text-muted sm:pt-0.5">
+                {c.year ?? (
+                  <span className="rounded-full bg-accent-soft px-2.5 py-0.5 text-xs font-semibold text-accent">In progress</span>
+                )}
+              </span>
+              <div>
+                <p className="font-semibold">{c.name}</p>
+                {c.issuer && <p className="text-muted">{c.issuer}</p>}
               </div>
             </li>
           ))}

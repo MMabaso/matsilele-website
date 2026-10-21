@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000" font-family="Inter, 'Segoe UI', Arial, sans-serif">
+<rect width="1600" height="1000" fill="#f3f1ec"/>
+<rect x="48" y="48" width="1504" height="904" rx="24" fill="#ffffff" stroke="#e7e5e1" stroke-width="2"/>
+<text x="96" y="128" font-size="40" fill="#16181d" font-weight="700" text-anchor="start">Commodity price forecast</text>
+<text x="96" y="170" font-size="22" fill="#5b6270" font-weight="400" text-anchor="start">Monthly average price (USD per tonne)</text>
+<rect x="1040" y="100" width="136" height="44" rx="22" fill="#0f6b5c" stroke="#0f6b5c" stroke-width="2"/>
+<text x="1108" y="129" font-size="18" fill="#ffffff" font-weight="600" text-anchor="middle">Commodity A</text>
+<rect x="1190" y="100" width="136" height="44" rx="22" fill="#ffffff" stroke="#e7e5e1" stroke-width="2"/>
+<text x="1258" y="129" font-size="18" fill="#5b6270" font-weight="600" text-anchor="middle">Commodity B</text>
+<rect x="1340" y="100" width="136" height="44" rx="22" fill="#ffffff" stroke="#e7e5e1" stroke-width="2"/>
+<text x="1408" y="129" font-size="18" fill="#5b6270" font-weight="600" text-anchor="middle">Commodity C</text>
+<line x1="170" y1="820" x2="1490" y2="820" stroke="#e7e5e1" stroke-width="2"/>
+<text x="152" y="827" font-size="18" fill="#5b6270" font-weight="400" text-anchor="end">$200</text>
+<line x1="170" y1="672" x2="1490" y2="672" stroke="#e7e5e1" stroke-width="2"/>
+<text x="152" y="680" font-size="18" fill="#5b6270" font-weight="400" text-anchor="end">$300</text>
+<line x1="170" y1="525" x2="1490" y2="525" stroke="#e7e5e1" stroke-width="2"/>
+<text x="152" y="532" font-size="18" fill="#5b6270" font-weight="400" text-anchor="end">$400</text>
+<line x1="170" y1="378" x2="1490" y2="378" stroke="#e7e5e1" stroke-width="2"/>
+<text x="152" y="384" font-size="18" fill="#5b6270" font-weight="400" text-anchor="end">$500</text>
+<line x1="170" y1="230" x2="1490" y2="230" stroke="#e7e5e1" stroke-width="2"/>
+<text x="152" y="237" font-size="18" fill="#5b6270" font-weight="400" text-anchor="end">$600</text>
+<text x="170" y="860" font-size="18" fill="#5b6270" font-weight="400" text-anchor="middle">Jan 2022</text>
+<text x="339" y="860" font-size="18" fill="#5b6270" font-weight="400" text-anchor="middle">Jul 2022</text>
+<text x="507" y="860" font-size="18" fill="#5b6270" font-weight="400" text-anchor="middle">Jan 2023</text>
+<text x="676" y="860" font-size="18" fill="#5b6270" font-weight="400" text-anchor="middle">Jul 2023</text>
+<text x="844" y="860" font-size="18" fill="#5b6270" font-weight="400" text-anchor="middle">Jan 2024</text>
+<text x="1013" y="860" font-size="18" fill="#5b6270" font-weight="400" text-anchor="middle">Jul 2024</text>
+<text x="1181" y="860" font-size="18" fill="#5b6270" font-weight="400" text-anchor="middle">Jan 2025</text>
+<text x="1350" y="860" font-size="18" fill="#5b6270" font-weight="400" text-anchor="middle">Jul 2025</text>
+<rect x="1153" y="230" width="337" height="590" fill="#f8fbfa"/>
+<line x1="1153" y1="820" x2="1490" y2="820" stroke="#e7e5e1" stroke-width="2"/>
+<line x1="1153" y1="672" x2="1490" y2="672" stroke="#e7e5e1" stroke-width="2"/>
+<line x1="1153" y1="525" x2="1490" y2="525" stroke="#e7e5e1" stroke-width="2"/>
+<line x1="1153" y1="378" x2="1490" y2="378" stroke="#e7e5e1" stroke-width="2"/>
+<line x1="1153" y1="230" x2="1490" y2="230" stroke="#e7e5e1" stroke-width="2"/>
+<polygon points="1153.0,502.1 1181.1,468.1 1209.1,439.9 1237.2,416.2 1265.3,397.4 1293.4,383.2 1321.5,372.7 1349.6,364.1 1377.7,355.6 1405.7,345.4 1433.8,332.0 1461.9,314.6 1490.0,293.4 1490.0,628.0 1461.9,625.3 1433.8,618.5 1405.7,607.4 1377.7,592.7 1349.6,575.7 1321.5,558.3 1293.4,542.2 1265.3,528.9 1237.2,519.2 1209.1,512.8 1181.1,508.5 1153.0,502.1" fill="#dcefe9"/>
+<polygon points="1153.0,502.1 1181.1,475.1 1209.1,452.5 1237.2,434.1 1265.3,420.3 1293.4,410.8 1321.5,404.9 1349.6,400.8 1377.7,396.7 1405.7,390.9 1433.8,381.7 1461.9,368.5 1490.0,351.4 1490.0,569.9 1461.9,571.4 1433.8,568.8 1405.7,562.0 1377.7,551.5 1349.6,539.0 1321.5,526.1 1293.4,514.6 1265.3,506.1 1237.2,501.4 1209.1,500.2 1181.1,501.5 1153.0,502.1" fill="#b4dccf"/>
+<line x1="1153" y1="220" x2="1153" y2="820" stroke="#5b6270" stroke-width="2" stroke-dasharray="6 8"/>
+<text x="1139" y="238" font-size="18" fill="#5b6270" font-weight="600" text-anchor="end">History</text>
+<text x="1167" y="238" font-size="18" fill="#0f6b5c" font-weight="600" text-anchor="start">Forecast</text>
+<polyline points="170.0,646.2 198.1,635.9 226.2,614.6 254.3,620.0 282.3,639.8 310.4,637.3 338.5,625.1 366.6,602.0 394.7,538.7 422.8,557.9 450.9,541.7 478.9,529.6 507.0,498.8 535.1,477.7 563.2,475.8 591.3,536.0 619.4,486.8 647.4,488.2 675.5,498.4 703.6,514.9 731.7,509.5 759.8,503.3 787.9,505.7 816.0,503.1 844.0,494.6 872.1,478.6 900.2,455.5 928.3,448.1 956.4,476.1 984.5,460.0 1012.6,481.5 1040.6,480.8 1068.7,503.2 1096.8,499.5 1124.9,509.6 1153.0,502.1" fill="none" stroke="#16181d" stroke-width="4" stroke-linejoin="round"/>
+<polyline points="1153.0,502.1 1181.1,488.3 1209.1,476.4 1237.2,467.7 1265.3,463.2 1293.4,462.7 1321.5,465.5 1349.6,469.9 1377.7,474.1 1405.7,476.4 1433.8,475.3 1461.9,470.0 1490.0,460.7" fill="none" stroke="#0f6b5c" stroke-width="5" stroke-dasharray="14 10" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="170.0" cy="646.2" r="5" fill="#16181d"/>
+<circle cx="198.1" cy="635.9" r="5" fill="#16181d"/>
+<circle cx="226.2" cy="614.6" r="5" fill="#16181d"/>
+<circle cx="254.3" cy="620.0" r="5" fill="#16181d"/>
+<circle cx="282.3" cy="639.8" r="5" fill="#16181d"/>
+<circle cx="310.4" cy="637.3" r="5" fill="#16181d"/>
+<circle cx="338.5" cy="625.1" r="5" fill="#16181d"/>
+<circle cx="366.6" cy="602.0" r="5" fill="#16181d"/>
+<circle cx="394.7" cy="538.7" r="5" fill="#16181d"/>
+<circle cx="422.8" cy="557.9" r="5" fill="#16181d"/>
+<circle cx="450.9" cy="541.7" r="5" fill="#16181d"/>
+<circle cx="478.9" cy="529.6" r="5" fill="#16181d"/>
+<circle cx="507.0" cy="498.8" r="5" fill="#16181d"/>
+<circle cx="535.1" cy="477.7" r="5" fill="#16181d"/>
+<circle cx="563.2" cy="475.8" r="5" fill="#16181d"/>
+<circle cx="591.3" cy="536.0" r="5" fill="#16181d"/>
+<circle cx="619.4" cy="486.8" r="5" fill="#16181d"/>
+<circle cx="647.4" cy="488.2" r="5" fill="#16181d"/>
+<circle cx="675.5" cy="498.4" r="5" fill="#16181d"/>
+<circle cx="703.6" cy="514.9" r="5" fill="#16181d"/>
+<circle cx="731.7" cy="509.5" r="5" fill="#16181d"/>
+<circle cx="759.8" cy="503.3" r="5" fill="#16181d"/>
+<circle cx="787.9" cy="505.7" r="5" fill="#16181d"/>
+<circle cx="816.0" cy="503.1" r="5" fill="#16181d"/>
+<circle cx="844.0" cy="494.6" r="5" fill="#16181d"/>
+<circle cx="872.1" cy="478.6" r="5" fill="#16181d"/>
+<circle cx="900.2" cy="455.5" r="5" fill="#16181d"/>
+<circle cx="928.3" cy="448.1" r="5" fill="#16181d"/>
+<circle cx="956.4" cy="476.1" r="5" fill="#16181d"/>
+<circle cx="984.5" cy="460.0" r="5" fill="#16181d"/>
+<circle cx="1012.6" cy="481.5" r="5" fill="#16181d"/>
+<circle cx="1040.6" cy="480.8" r="5" fill="#16181d"/>
+<circle cx="1068.7" cy="503.2" r="5" fill="#16181d"/>
+<circle cx="1096.8" cy="499.5" r="5" fill="#16181d"/>
+<circle cx="1124.9" cy="509.6" r="5" fill="#16181d"/>
+<circle cx="1153.0" cy="502.1" r="5" fill="#16181d"/>
+<circle cx="1153.0" cy="502.1" r="9" fill="#0f6b5c" stroke="#ffffff" stroke-width="3"/>
+<line x1="170" y1="900" x2="214" y2="900" stroke="#16181d" stroke-width="4"/>
+<text x="228" y="907" font-size="20" fill="#16181d" font-weight="400" text-anchor="start">Actual</text>
+<line x1="340" y1="900" x2="384" y2="900" stroke="#0f6b5c" stroke-width="5" stroke-dasharray="14 10"/>
+<text x="398" y="907" font-size="20" fill="#16181d" font-weight="400" text-anchor="start">Forecast</text>
+<rect x="530" y="888" width="44" height="24" rx="4" fill="#b4dccf"/>
+<text x="588" y="907" font-size="20" fill="#16181d" font-weight="400" text-anchor="start">80% interval</text>
+<rect x="760" y="888" width="44" height="24" rx="4" fill="#dcefe9"/>
+<text x="818" y="907" font-size="20" fill="#16181d" font-weight="400" text-anchor="start">95% interval</text>
+</svg>
