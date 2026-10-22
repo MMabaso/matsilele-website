@@ -22,7 +22,7 @@ export default function About() {
 
       <div className="space-y-5 text-lg leading-relaxed text-ink/85">
         <p>
-          I'm a data scientist who works like a forward deployed engineer. For 8+ years I've turned data into
+          I'm a data scientist who works like an AI engineer. For 8+ years I've turned data into
           decisions and models into working systems across financial services, manufacturing and research, usually
           sitting right next to the people who use them.
         </p>
@@ -33,7 +33,7 @@ export default function About() {
           whether a model is actually right: careful evaluation, honest uncertainty, and experiments that hold up.
         </p>
         <p>
-          The forward deployed engineer in me cares about whether it gets used. I work embedded with engineering,
+          The AI engineer in me cares about whether it gets used. I work embedded with engineering,
           operations and business teams, learn how their work really runs, and own the whole path from discovery to a
           deployed system: data pipelines, models, APIs and apps, CI/CD and Azure cloud. At Sasol that meant
           forecasting and predictive maintenance tools for planners and engineers. At Hulamin it means ML and

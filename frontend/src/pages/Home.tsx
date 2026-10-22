@@ -28,31 +28,34 @@ export default function Home() {
           />
           <div>
             <h1 className="font-serif text-5xl font-semibold tracking-tight sm:text-4xl">Hello, I’m Matsilele.</h1>
-            <p className="mt-4 text-sm font-semibold tracking-wider text-accent uppercase">Data Scientist | AI Engineer</p>
+            <p className="mt-4 text-xl text-ink/85">
+              I’m a <strong className="font-semibold text-accent">data scientist</strong> who works as a{' '}
+              <strong className="font-semibold text-accent">AI engineer</strong>.
+            </p>
             <div className="mt-6 space-y-5 text-lg leading-relaxed text-ink/85">
               <p>
-                I'm {profile.shortName}. I work where the problem is: alongside the engineers, operators and business
-                teams who live with it every day. I learn how their work really runs, then build and ship the AI that
-                fixes it, in production.
+                I like taking machine learning out of the notebook and putting it where the work actually happens: the
+                plant floor, the control room, the operations meeting. Hopefully you’re here because you like that too.
+                Outside work you’ll find me hiking (slowly, but always to the top) or ice skating, where I’ve mastered
+                the art of falling gracefully and getting straight back up. Surprisingly good practice for production
+                ML.
               </p>
               <p>
-                That means owning the whole path myself: discovery with stakeholders, data pipelines, models, the
-                APIs and apps people actually use, and the CI/CD and cloud setup that keeps it all running. A working
-                system in someone's hands beats a perfect model in a notebook.
+                I’m a Senior Data Scientist at <strong className="font-semibold">Hulamin</strong>, where I sit with
+                engineering and operations teams and ship ML and generative AI apps into production on Azure. Before
+                that I built forecasting and predictive maintenance tools at <strong className="font-semibold">Sasol</strong>,
+                credit risk models at Consumer Profile Bureau, and spent eight years doing computer vision research at
+                the <strong className="font-semibold">CSIR</strong> while earning a PhD in Electrical Engineering from
+                the University of Johannesburg.
               </p>
               <p>
-                Right now I do this as a Senior Data Scientist at <strong className="font-semibold">Hulamin</strong>,
-                embedded with engineering and operations teams and shipping ML apps on Azure. Before that I did the same
-                at <strong className="font-semibold">Sasol</strong> and in credit risk at Consumer Profile Bureau, after
-                a PhD in Electrical Engineering and computer vision research at the{' '}
-                <strong className="font-semibold">CSIR</strong>.
-              </p>
-              <p>
-                For more about me and my work, please{' '}
+                Somewhere along the way I realised the hardest part of AI isn’t the model. It’s getting a real person to
+                use it on a Tuesday morning. That’s what I care about now. If
+                you’d rather just ask me,{' '}
                 <Link to="/avatar" className="font-medium text-accent underline decoration-2 underline-offset-4 hover:decoration-accent/40">
-                  chat with my Digital Twin here
-                </Link>
-                .
+                  my digital twin
+                </Link>{' '}
+                is awake 24/7 and, unlike me, never needs coffee first.
               </p>
             </div>
           </div>
