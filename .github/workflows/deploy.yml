@@ -1,9 +1,12 @@
-# Deploy: every push to main runs CI, then builds the image, pushes it to Azure Container Registry
-# and rolls it out to Azure Container Apps. Can also be started by hand from the Actions tab.
+# Deploy: every push to main runs CI, then builds the image, pushes it to Google Artifact Registry
+# and rolls it out to Cloud Run. Can also be started by hand from the Actions tab.
 #
-# One-time setup (see README → "GitHub Actions"):
-#   Repository variables:  AZURE_RESOURCE_GROUP, ACR_NAME, CONTAINER_APP_NAME
-#   Repository secrets:    AZURE_CLIENT_ID, AZURE_TENANT_ID, AZURE_SUBSCRIPTION_ID   (OIDC, no passwords)
+# One-time setup (see README → "GitHub Actions"): run scripts/setup-github-deploy.sh, then add the
+# repository variables it prints: GCP_PROJECT_ID, GCP_REGION, CLOUD_RUN_SERVICE, GCP_WORKLOAD_IDENTITY_PROVIDER,
+# GCP_DEPLOY_SERVICE_ACCOUNT. Sign-in uses Workload Identity Federation (OIDC): no keys or passwords stored.
+#
+# This only swaps the container image. The service's settings and secrets (DATABASE_URL, OPENAI_API_KEY, ...)
+# stay as configured on Cloud Run, so change those with `gcloud run services update`, not here.
 name: Deploy
 
 on:
@@ -13,14 +16,11 @@ on:
 
 permissions:
   contents: read
-  id-token: write # lets GitHub sign in to Azure with OIDC
+  id-token: write # lets GitHub sign in to Google Cloud with OIDC
 
 concurrency:
   group: deploy-production
   cancel-in-progress: false # never stop a deployment half-way
-
-env:
-  IMAGE_NAME: matsilele-website
 
 jobs:
   checks:
@@ -34,32 +34,40 @@ jobs:
     environment:
       name: production
     env:
-      RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
-      ACR_NAME: ${{ vars.ACR_NAME }}
-      APP_NAME: ${{ vars.CONTAINER_APP_NAME }}
+      PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
+      REGION: ${{ vars.GCP_REGION }}
+      SERVICE: ${{ vars.CLOUD_RUN_SERVICE }}
+      IMAGE: ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/website/site
     steps:
       - uses: actions/checkout@v4
 
       - name: Check configuration
+        env:
+          GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
+          GCP_REGION: ${{ vars.GCP_REGION }}
+          CLOUD_RUN_SERVICE: ${{ vars.CLOUD_RUN_SERVICE }}
+          GCP_WORKLOAD_IDENTITY_PROVIDER: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          GCP_DEPLOY_SERVICE_ACCOUNT: ${{ vars.GCP_DEPLOY_SERVICE_ACCOUNT }}
         run: |
           missing=""
-          for v in RESOURCE_GROUP ACR_NAME APP_NAME; do
-            [ -z "$(eval echo \$$v)" ] && missing="$missing $v"
+          for v in GCP_PROJECT_ID GCP_REGION CLOUD_RUN_SERVICE GCP_WORKLOAD_IDENTITY_PROVIDER GCP_DEPLOY_SERVICE_ACCOUNT; do
+            [ -z "${!v}" ] && missing="$missing $v"
           done
           if [ -n "$missing" ]; then
             echo "::error::Missing repository variables:$missing (Settings → Secrets and variables → Actions → Variables)"
             exit 1
           fi
 
-      - name: Sign in to Azure (OIDC)
-        uses: azure/login@v2
+      - name: Sign in to Google Cloud (OIDC)
+        uses: google-github-actions/auth@v2
         with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_DEPLOY_SERVICE_ACCOUNT }}
 
-      - name: Sign in to Azure Container Registry
-        run: az acr login --name "$ACR_NAME"
+      - uses: google-github-actions/setup-gcloud@v2
+
+      - name: Sign in to Artifact Registry
+        run: gcloud auth configure-docker "$REGION-docker.pkg.dev" --quiet
 
       - uses: docker/setup-buildx-action@v3
 
@@ -68,28 +76,31 @@ jobs:
         with:
           context: .
           push: true
+          platforms: linux/amd64
           tags: |
-            ${{ vars.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
-            ${{ vars.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:latest
+            ${{ env.IMAGE }}:${{ github.sha }}
+            ${{ env.IMAGE }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Deploy to Azure Container Apps
+      - name: Deploy to Cloud Run
         run: |
-          az containerapp update \
-            --name "$APP_NAME" \
-            --resource-group "$RESOURCE_GROUP" \
-            --image "$ACR_NAME.azurecr.io/$IMAGE_NAME:${{ github.sha }}"
+          gcloud run deploy "$SERVICE" \
+            --project "$PROJECT_ID" \
+            --region "$REGION" \
+            --image "$IMAGE:${{ github.sha }}" \
+            --quiet
 
+      # Not /healthz: Cloud Run reserves paths ending in "z" and answers them itself.
       - name: Check the live site
         run: |
-          FQDN=$(az containerapp show --name "$APP_NAME" --resource-group "$RESOURCE_GROUP" \
-                   --query properties.configuration.ingress.fqdn -o tsv)
-          echo "Checking https://$FQDN"
+          URL=$(gcloud run services describe "$SERVICE" --project "$PROJECT_ID" --region "$REGION" \
+                  --format='value(status.url)')
+          echo "Checking $URL"
           for i in $(seq 1 30); do
-            curl -fsS "https://$FQDN/healthz" >/dev/null && break
+            curl -fsS -o /dev/null "$URL/" && break
             sleep 5
           done
-          curl -fsS "https://$FQDN/healthz"
-          curl -fsS "https://$FQDN/api/posts/?limit=1" >/dev/null
-          echo "### Deployed ${GITHUB_SHA::7} to https://$FQDN" >> "$GITHUB_STEP_SUMMARY"
+          curl -fsS -o /dev/null "$URL/"
+          curl -fsS -o /dev/null "$URL/api/posts/?limit=1"
+          echo "### Deployed ${GITHUB_SHA::7} to $URL" >> "$GITHUB_STEP_SUMMARY"

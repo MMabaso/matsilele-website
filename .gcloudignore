@@ -1,0 +1,5 @@
+# Files Cloud Build should NOT upload (gcloud builds submit). Secrets and local build output stay on this machine.
+.gcloudignore
+.git
+.github
+#!include:.gitignore

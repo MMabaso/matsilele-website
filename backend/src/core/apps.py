@@ -26,6 +26,12 @@ class CoreConfig(AppConfig):
         if settings.RAG_ENABLED and settings.RAG_BUILD_ON_START and _is_web_server_start():
             import threading
 
+            # Import these here, on the main thread, before any other thread runs. If the rebuild thread
+            # and the first request import them at the same moment, one sees a half-loaded module
+            # ("partially initialized module 'httpx'"), which is what happens on a fresh Cloud Run container.
+            import chromadb  # noqa: F401
+            import openai  # noqa: F401
+
             from .rag import rebuild_in_background
 
             # Rebuild the twin's knowledge index from the knowledge files + database, in the

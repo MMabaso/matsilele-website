@@ -195,69 +195,48 @@ docker run -p 8000:8000 --env-file backend/.env \
 
 The container listens on `$PORT` (default 8000) and answers health checks at `/healthz`. The RAG index
 (`chroma/`) is rebuilt on every start, so the container needs no persistent disk except for uploaded post
-images in `/app/backend/media` (mount a volume or Azure Files share there).
+images in `/app/backend/media` (mount a volume there, or use a Cloud Storage bucket on Cloud Run).
+
+## Deploying to Google Cloud Run
+
+The site runs on **Cloud Run** in `europe-west3` (Frankfurt, next to the Neon database), as the service
+`matsilele-website` in project `matsilelemabaso`, running as the service account `matsilele`.
+
+- **Secrets** live in Secret Manager and are mounted as environment variables: `DATABASE_URL`, `DJANGO_SECRET_KEY`,
+  `OPENAI_API_KEY`, `EMAIL_HOST_PASSWORD`. Only the `matsilele` account can read them.
+- **Plain settings** (`DJANGO_ALLOWED_HOSTS=.run.app`, `CSRF_TRUSTED_ORIGINS`, `SITE_URL`, `LLM_MODEL`, ...) are set on
+  the service. Change either kind with `gcloud run services update matsilele-website --update-env-vars ...` or
+  `--update-secrets ...`; deploys keep whatever is set there.
+- **Execution environment gen2** is required: Chroma (the RAG index) can't open its SQLite store in gen1.
+- Cloud Run answers `/healthz` itself (paths ending in `z` are reserved), so check `/` instead from outside.
+- The disk is wiped on every restart: the RAG index rebuilds itself, but post images uploaded in /admin are lost
+  (move them to a Cloud Storage bucket before relying on them).
+
+Update a secret without it appearing in your shell history:
+
+```bash
+read -s -p "New OpenAI key: " K && printf '%s' "$K" | gcloud secrets versions add OPENAI_API_KEY --data-file=- && unset K
+gcloud run services update matsilele-website --region europe-west3 --update-secrets OPENAI_API_KEY=OPENAI_API_KEY:latest
+```
 
 ## GitHub Actions (CI/CD)
 
 ```
 .github/workflows/ci.yml      every PR and non-main push: Django tests · React lint + build · Docker build + smoke test
-.github/workflows/deploy.yml  every push to main: runs ci.yml → builds image → pushes to ACR → updates Container App → checks the live site
+.github/workflows/deploy.yml  every push to main: runs ci.yml → builds image → pushes to Artifact Registry → deploys to Cloud Run → checks the live site
 ```
 
-`deploy.yml` signs in to Azure with **OIDC** (GitHub proves who it is; no passwords stored anywhere).
+`deploy.yml` signs in to Google Cloud with **Workload Identity Federation** (GitHub proves who it is with OIDC;
+no keys or passwords stored anywhere). It uses its own `github-deployer` service account, which can only push to
+the `website` image repository and deploy the `matsilele-website` service, and only this repo's `main` branch can
+use it.
 
-### One-time Azure setup
+### One-time setup
 
 ```bash
-# Names: change to taste (ACR names must be globally unique, lowercase letters/numbers)
-RG=matsilele-site; LOC=southafricanorth; ACR=matsileleacr; ENV=matsilele-env; APP=matsilele-website
-GH_REPO=<your-github-user>/<your-repo>
-
-az group create -n $RG -l $LOC
-az acr create -n $ACR -g $RG --sku Basic
-az containerapp env create -n $ENV -g $RG -l $LOC
-
-# The Container App (a placeholder image until the first deploy replaces it)
-az containerapp create -n $APP -g $RG --environment $ENV \
-  --image mcr.microsoft.com/k8se/quickstart:latest \
-  --ingress external --target-port 8000 \
-  --registry-server $ACR.azurecr.io --registry-identity system \
-  --min-replicas 0 --max-replicas 1 \
-  --secrets django-secret="$(openssl rand -base64 48)" openai-key="<your-openai-key>" \
-            database-url="<postgres://user:pass@host:5432/db?sslmode=require>" \
-  --env-vars DJANGO_SECRET_KEY=secretref:django-secret OPENAI_API_KEY=secretref:openai-key \
-             DATABASE_URL=secretref:database-url SEED_POSTS=true \
-             DJANGO_ALLOWED_HOSTS=.azurecontainerapps.io \
-             CSRF_TRUSTED_ORIGINS=https://$APP.<your-env-domain>.azurecontainerapps.io \
-             SITE_URL=https://$APP.<your-env-domain>.azurecontainerapps.io
-# (get the exact address with: az containerapp show -n $APP -g $RG --query properties.configuration.ingress.fqdn -o tsv
-#  and add your own domain to ALLOWED_HOSTS/CSRF_TRUSTED_ORIGINS/SITE_URL once you connect it)
-
-# An identity GitHub Actions can use, trusted only for this repo's "production" environment
-CLIENT_ID=$(az ad app create --display-name github-$APP --query appId -o tsv)
-az ad sp create --id $CLIENT_ID
-az ad app federated-credential create --id $CLIENT_ID --parameters "{
-  \"name\": \"github-production\",
-  \"issuer\": \"https://token.actions.githubusercontent.com\",
-  \"subject\": \"repo:$GH_REPO:environment:production\",
-  \"audiences\": [\"api://AzureADTokenExchange\"]}"
-az role assignment create --assignee $CLIENT_ID --role Contributor --scope $(az group show -n $RG --query id -o tsv)
-az role assignment create --assignee $CLIENT_ID --role AcrPush --scope $(az acr show -n $ACR --query id -o tsv)
-
-echo "AZURE_CLIENT_ID=$CLIENT_ID"
-echo "AZURE_TENANT_ID=$(az account show --query tenantId -o tsv)"
-echo "AZURE_SUBSCRIPTION_ID=$(az account show --query id -o tsv)"
+bash scripts/setup-github-deploy.sh
 ```
 
-Then in GitHub → **Settings → Secrets and variables → Actions**:
-
-- **Secrets:** `AZURE_CLIENT_ID`, `AZURE_TENANT_ID`, `AZURE_SUBSCRIPTION_ID` (printed above)
-- **Variables:** `AZURE_RESOURCE_GROUP` = `matsilele-site`, `ACR_NAME` = `matsileleacr`,
-  `CONTAINER_APP_NAME` = `matsilele-website`
-
-Push to `main` and watch the **Actions** tab. Add more app settings (email, Pushover) with
-`az containerapp update -n $APP -g $RG --set-env-vars ...` or in the Azure portal.
-
-**Database:** use Azure Database for PostgreSQL (Flexible Server, smallest tier) or a free Postgres such as
-Neon, and put its connection string in the `database-url` secret. Don't use SQLite in a container: it's
-wiped on every deploy.
+Then in GitHub → **Settings → Secrets and variables → Actions → Variables**, add the five values it prints:
+`GCP_PROJECT_ID`, `GCP_REGION`, `CLOUD_RUN_SERVICE`, `GCP_WORKLOAD_IDENTITY_PROVIDER`, `GCP_DEPLOY_SERVICE_ACCOUNT`.
+Push to `main` and watch the **Actions** tab.
