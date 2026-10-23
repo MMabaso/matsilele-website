@@ -29,7 +29,7 @@ export default function Home() {
           <div>
             <h1 className="font-serif text-5xl font-semibold tracking-tight sm:text-4xl">Hello, I’m Matsilele.</h1>
             <p className="mt-4 text-xl text-ink/85">
-              I’m a <strong className="font-semibold text-accent">data scientist</strong> who works as a{' '}
+              I’m a <strong className="font-semibold text-accent">data scientist</strong> who works as an{' '}
               <strong className="font-semibold text-accent">AI engineer</strong>.
             </p>
             <div className="mt-6 space-y-5 text-lg leading-relaxed text-ink/85">
