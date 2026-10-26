@@ -104,7 +104,7 @@ class DigitalTwinTests(ChatTestCase):
             self.chat("What are your salary expectations?")
         self.assertEqual(UnansweredQuestion.objects.get().question, "What are your salary expectations?")
 
-    def test_live_chat_tool_only_offered_when_online(self):
+    def test_live_chat_tool_offered_online_and_offline(self):
         client = fake_client(text_response("a"), text_response("b"))
         with patch("openai.OpenAI", return_value=client):
             self.chat("hi")
@@ -112,9 +112,23 @@ class DigitalTwinTests(ChatTestCase):
             self.chat("hi again")
         calls = client.chat.completions.create.call_args_list
         names = lambda c: {t["function"]["name"] for t in c.kwargs["tools"]}  # noqa: E731
-        self.assertNotIn("request_live_chat", names(calls[0]))
+        self.assertIn("request_live_chat", names(calls[0]))
+        self.assertIn("OFFLINE", calls[0].kwargs["messages"][0]["content"])
         self.assertIn("request_live_chat", names(calls[1]))
         self.assertIn("ONLINE", calls[1].kwargs["messages"][0]["content"])
+
+    def test_request_live_chat_while_offline_pages_you_with_join_link(self):
+        client = fake_client(
+            tool_call_response("request_live_chat", {"reason": "Wants to discuss a role"}),
+            text_response("I've messaged Matsilele; if he's free he'll join here in a few minutes."),
+        )
+        with patch("openai.OpenAI", return_value=client):
+            self.chat("Can I talk to the real you?")
+        conv = Conversation.objects.get()
+        self.assertTrue(conv.needs_human)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn("offline", mail.outbox[0].subject)
+        self.assertIn(f"/inbox?c={conv.id}", mail.outbox[0].body)
 
     def test_request_live_chat_flags_conversation_and_notifies(self):
         OperatorPresence.touch()

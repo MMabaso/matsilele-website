@@ -2,7 +2,8 @@
 (see rag.py). If retrieval isn't available it falls back to the whole profile.
 
 It can also take action through tools:
-  - request_live_chat: you're online and the visitor wants you -> flagged in /inbox + you get notified
+  - request_live_chat: the visitor wants you live -> flagged in /inbox + you get notified (with a link to join,
+    so you can sign in and take over even if you were offline)
   - record_contact_request: a visitor wants to talk to the real Matsilele -> saved + you get notified
   - record_unanswered_question: the twin couldn't answer -> saved + you get notified
 """
@@ -42,7 +43,10 @@ specific opportunity, or asks something only he can answer, offer to bring him i
 you can keep chatting meanwhile. Also offer to take their contact details in case he can't make it."""
 
 LIVE_OFFLINE = """## Live chat — Matsilele is OFFLINE right now
-He can't join the chat at the moment, so don't promise a live conversation. Offer to pass a message on instead."""
+He isn't watching the chat, but you can page him on his phone. When a visitor wants to talk to him directly
+(now, live), offer to ping him. If they say yes, call `request_live_chat`, then tell them you've messaged him and
+that if he's free he'll join this chat in a few minutes, so they can keep this window open. Never promise that he
+will join. Meanwhile keep helping them, and offer to take their contact details in case he can't make it."""
 
 
 def format_passages(passages: list[dict]) -> str:
@@ -153,7 +157,8 @@ LIVE_CHAT_TOOL = {
     "type": "function",
     "function": {
         "name": "request_live_chat",
-        "description": "Ask the real Matsilele to join this chat live. Only use when the visitor has agreed.",
+        "description": "Ask the real Matsilele to join this chat live; he is notified on his phone with a link. "
+                       "Only use when the visitor has agreed.",
         "parameters": {
             "type": "object",
             "properties": {"reason": {"type": "string", "description": "What the visitor wants to discuss"}},
@@ -169,15 +174,18 @@ def inbox_link(session_id: str) -> str:
     return f"{settings.SITE_URL}/inbox?c={conv.id}" if conv else f"{settings.SITE_URL}/inbox"
 
 
-def request_live_chat(session_id: str, reason: str) -> dict:
+def request_live_chat(session_id: str, reason: str, operator_online: bool = False) -> dict:
     conv = Conversation.objects.filter(session_id=session_id).first()
     if not conv:
         return {"requested": False}
     if not conv.needs_human:
         conv.needs_human = True
         conv.save(update_fields=["needs_human"])
-        notify("💬 A visitor wants to chat with you live",
-               f"{conv.display_name}: {reason.strip()}\n\nJoin: {inbox_link(session_id)}")
+        if operator_online:
+            title, join = "💬 A visitor wants to chat with you live", "Join"
+        else:
+            title, join = "💬 A visitor is waiting to chat with you (you're offline)", "Sign in and join"
+        notify(title, f"{conv.display_name}: {reason.strip()}\n\n{join}: {inbox_link(session_id)}")
     return {"requested": True}
 
 
@@ -208,7 +216,7 @@ def record_unanswered_question(session_id: str, question: str) -> dict:
     return {"recorded": True}
 
 
-def run_tool(name: str, raw_args: str, session_id: str) -> dict:
+def run_tool(name: str, raw_args: str, session_id: str, operator_online: bool = False) -> dict:
     try:
         args = json.loads(raw_args or "{}")
         if name == "record_contact_request":
@@ -216,7 +224,7 @@ def run_tool(name: str, raw_args: str, session_id: str) -> dict:
         if name == "record_unanswered_question":
             return record_unanswered_question(session_id, **args)
         if name == "request_live_chat":
-            return request_live_chat(session_id, **args)
+            return request_live_chat(session_id, **args, operator_online=operator_online)
         return {"error": f"Unknown tool {name}"}
     except Exception as exc:  # never let a tool failure break the chat
         logger.exception("Tool %s failed", name)
@@ -265,7 +273,7 @@ def ask_twin(message: str, history: list[dict], session_id: str = "anonymous",
     activity.append({"type": "search", "count": len(passages or [])})
 
     client = OpenAI(api_key=settings.OPENAI_API_KEY, base_url=settings.OPENAI_BASE_URL)
-    tools = TOOLS + ([LIVE_CHAT_TOOL] if operator_online else [])
+    tools = TOOLS + [LIVE_CHAT_TOOL]
     messages: list = [{"role": "system", "content": system_prompt(operator_online, passages)}]
     messages += [{"role": m["role"], "content": m["content"]} for m in history[-MAX_HISTORY:]]
     messages.append({"role": "user", "content": message})
@@ -280,7 +288,7 @@ def ask_twin(message: str, history: list[dict], session_id: str = "anonymous",
 
         messages.append(choice)
         for call in choice.tool_calls:
-            result = run_tool(call.function.name, call.function.arguments, session_id)
+            result = run_tool(call.function.name, call.function.arguments, session_id, operator_online)
             activity.append({"type": "tool", "name": call.function.name})
             messages.append({"role": "tool", "tool_call_id": call.id, "content": json.dumps(result)})
 

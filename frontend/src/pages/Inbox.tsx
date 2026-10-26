@@ -13,7 +13,7 @@ function SignIn() {
       <h1 className="font-serif text-3xl font-semibold">Inbox</h1>
       <p className="mt-3 text-muted">This page is only for you. Sign in with your Django admin account to see live conversations.</p>
       <a
-        href="/admin/login/?next=/inbox"
+        href={`/admin/login/?next=${encodeURIComponent(`/inbox${window.location.search}`)}`}
         className="mt-6 inline-block rounded-xl bg-accent px-5 py-3 font-medium text-white hover:bg-accent/90"
       >
         Sign in
