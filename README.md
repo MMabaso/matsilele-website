@@ -219,19 +219,17 @@ read -s -p "New OpenAI key: " K && printf '%s' "$K" | gcloud secrets versions ad
 gcloud run services update matsilele-website --region europe-west3 --update-secrets OPENAI_API_KEY=OPENAI_API_KEY:latest
 ```
 
-## Custom domain (Firebase Hosting)
+## Public address (Firebase Hosting)
 
 The site's public address is **https://matsilelemabaso.web.app**. Firebase Hosting serves it (free SSL and CDN) and
 forwards every request to the Cloud Run service through the rewrite in `firebase.json`. `firebase/public/` stays
 empty on purpose so nothing shadows the site.
 
-One-time setup:
+Firebase is turned on for the `matsilelemabaso` project (Blaze plan, same billing as Cloud Run). Publish the
+Hosting config with your gcloud login (no Firebase CLI needed; `firebase deploy --only hosting` does the same):
 
 ```bash
-npm install -g firebase-tools
-firebase login
-firebase projects:addfirebase matsilelemabaso   # only the first time: turns on Firebase for the GCP project
-firebase deploy --only hosting                  # live at https://matsilelemabaso.web.app
+bash scripts/deploy-hosting.sh
 ```
 
 Tell Django about the new address (`^@^` makes `@` the separator, since the values contain commas):
@@ -249,7 +247,7 @@ Things Firebase changes:
 - **Only one cookie survives**: Firebase drops every cookie except `__session`. That's why the Django session
   cookie is named `__session` and the CSRF token is kept in the session (the inbox gets it from `/api/inbox/me/`).
 - **60-second limit** per request: a chat reply that takes longer is cut off.
-- Re-run `firebase deploy --only hosting` only when `firebase.json` changes; normal pushes to `main` still deploy
+- Re-run `scripts/deploy-hosting.sh` only when `firebase.json` changes; normal pushes to `main` still deploy
   to Cloud Run as before.
 
 ## GitHub Actions (CI/CD)
