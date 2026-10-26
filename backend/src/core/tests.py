@@ -10,6 +10,7 @@ from unittest.mock import MagicMock, patch
 
 from django.contrib.auth import get_user_model
 from django.core import mail
+from django.core.cache import cache
 from django.test import Client, TestCase, override_settings
 from django.utils import timezone
 
@@ -47,6 +48,9 @@ NOTIFY_SETTINGS = dict(
 
 
 class ChatTestCase(TestCase):
+    def setUp(self):
+        cache.clear()  # the chat rate limit counts in the cache, which outlives each test
+
     def chat(self, message, session=SESSION):
         return self.client.post("/api/chat/", {"message": message, "session_id": session},
                                 content_type="application/json")
@@ -136,6 +140,7 @@ class DigitalTwinTests(ChatTestCase):
 @override_settings(**NOTIFY_SETTINGS)
 class LiveInboxTests(ChatTestCase):
     def setUp(self):
+        super().setUp()
         self.staff = Client()
         user = get_user_model().objects.create_user("matsilele", password="pw", is_staff=True)
         self.staff.force_login(user)
@@ -153,6 +158,17 @@ class LiveInboxTests(ChatTestCase):
         c = Client()
         c.force_login(visitor)
         self.assertEqual(c.get("/api/inbox/conversations/").status_code, 403)
+
+    def test_reply_uses_csrf_token_from_me(self):
+        # Behind Firebase Hosting only the "__session" cookie survives, so the token comes from /me/
+        staff = Client(enforce_csrf_checks=True)
+        staff.force_login(get_user_model().objects.get(username="matsilele"))
+        self.assertEqual(list(staff.cookies), ["__session"])
+        url = f"/api/inbox/conversations/{self.conv.id}/messages/"
+        self.assertEqual(staff.post(url, {"content": "Hi"}, content_type="application/json").status_code, 403)
+        token = staff.get("/api/inbox/me/").json()["csrf"]
+        res = staff.post(url, {"content": "Hi"}, content_type="application/json", headers={"X-CSRFToken": token})
+        self.assertEqual(res.status_code, 201)
 
     def test_inbox_lists_newest_activity_first(self):
         with patch("openai.OpenAI", return_value=fake_client(text_response("a"), text_response("b"))):
@@ -216,6 +232,7 @@ class LiveInboxTests(ChatTestCase):
 @override_settings(**NOTIFY_SETTINGS)
 class FaqTests(ChatTestCase):
     def setUp(self):
+        super().setUp()
         FaqEntry.objects.all().delete()  # ignore the seeded starters
         FaqEntry.objects.create(question="First?", answer="Answer one", order=1)
         FaqEntry.objects.create(question="Hidden?", answer="Nope", order=2, published=False)
@@ -286,6 +303,7 @@ def fake_embed(texts):
 
 class RagTests(TestCase):
     def setUp(self):
+        cache.clear()  # chat rate limit
         import tempfile
 
         from . import rag

@@ -1,6 +1,7 @@
 import logging
 
 from django.db.models import Count, F, Q
+from django.middleware.csrf import get_token
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework import generics, status
@@ -175,7 +176,8 @@ class StaffView(APIView):
 
 class InboxMeView(StaffView):
     def get(self, request):
-        return Response({"username": request.user.get_username()})
+        # The CSRF token lives in the session (no cookie behind Firebase), so hand it to the inbox here
+        return Response({"username": request.user.get_username(), "csrf": get_token(request)})
 
 
 class InboxListView(StaffView):

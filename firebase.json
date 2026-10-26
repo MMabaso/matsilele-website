@@ -1,0 +1,12 @@
+{
+  "hosting": {
+    "public": "firebase/public",
+    "ignore": ["firebase.json", "**/.*"],
+    "rewrites": [
+      {
+        "source": "**",
+        "run": { "serviceId": "matsilele-website", "region": "europe-west3" }
+      }
+    ]
+  }
+}

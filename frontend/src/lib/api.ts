@@ -11,8 +11,10 @@ export class HttpError extends Error {
   }
 }
 
+// The CSRF token lives in the server session (Firebase Hosting drops cookies), so inboxMe() fetches it
+let csrf = ''
 function csrfToken(): string {
-  return document.cookie.match(/(?:^|;\s*)csrftoken=([^;]+)/)?.[1] ?? ''
+  return csrf
 }
 
 async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
@@ -72,7 +74,11 @@ export const pollChat = (after: number) => request<ChatState>(`/api/chat/${sessi
 export const fetchFaq = () => request<FaqItem[]>('/api/faq/')
 
 // ---------------------------------------------------------------- inbox (staff)
-export const inboxMe = () => request<{ username: string }>('/api/inbox/me/')
+export const inboxMe = () =>
+  request<{ username: string; csrf: string }>('/api/inbox/me/').then((me) => {
+    csrf = me.csrf
+    return me
+  })
 export const inboxList = () => request<InboxConversation[]>('/api/inbox/conversations/')
 export const inboxThread = (id: number, after = 0) =>
   request<InboxThread>(`/api/inbox/conversations/${id}/messages/?after=${after}`)

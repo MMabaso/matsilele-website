@@ -127,6 +127,11 @@ CSRF_TRUSTED_ORIGINS = env_list(
     "CSRF_TRUSTED_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173"
 )
 
+# Firebase Hosting (the custom domain in front of Cloud Run) drops every cookie except "__session",
+# so the session uses that name and the CSRF token lives in the session (see InboxMeView).
+SESSION_COOKIE_NAME = "__session"
+CSRF_USE_SESSIONS = True
+
 # Public URL of the site, used for links in notifications (e.g. to /inbox)
 SITE_URL = os.getenv("SITE_URL", "http://localhost:5173").rstrip("/")
 
