@@ -37,8 +37,8 @@ export default function Home() {
                 I like taking machine learning out of the notebook and putting it where the work actually happens: the
                 plant floor, the control room, the operations meeting. Hopefully you’re here because you like that too.
                 Outside work you’ll find me hiking (slowly, but always to the top) or ice skating, where I’ve mastered
-                the art of falling gracefully and getting straight back up. Surprisingly good practice for production
-                ML.
+                the art of falling gracefully and getting straight back up. I also bake, where every batch is an
+                experiment and my friends are the eval set. All surprisingly good practice for production ML.
               </p>
               <p>
                 I’m a Senior Data Scientist at <strong className="font-semibold">Hulamin</strong>, where I sit with

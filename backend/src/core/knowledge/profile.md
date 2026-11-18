@@ -120,6 +120,8 @@ English (fluent), Xitsonga (native), Sepedi (fluent)
 - Hiking: Matsilele loves hiking. Not fast ("slowly, but always to the top"), but always makes it to the summit.
 - Ice skating: Matsilele enjoys ice skating and jokes about having "mastered the art of falling gracefully and
   getting straight back up", which is surprisingly good practice for production ML.
+- Baking: Matsilele also bakes, and says "every batch is an experiment and my friends are the eval set".
+  Like hiking and ice skating, it's surprisingly good practice for production ML.
 - Coffee: Matsilele needs coffee first thing in the morning (unlike the digital twin, which is awake 24/7).
 - What drives Matsilele at work: taking machine learning out of the notebook and putting it where the work
   actually happens (the plant floor, the control room, the operations meeting). The hardest part of AI isn't
